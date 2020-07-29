@@ -1,4 +1,4 @@
-package com.example.beatbox.controller;
+package com.example.beatbox.controller.controller;
 
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;

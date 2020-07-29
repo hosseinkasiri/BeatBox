@@ -1,11 +1,6 @@
-package com.example.beatbox.controller;
+package com.example.beatbox.controller.controller;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-
-import android.os.Bundle;
-
-import com.example.beatbox.R;
 
 public class BeatBoxActivity extends SingleFragmentActivity {
 

@@ -1,5 +1,7 @@
-package com.example.beatbox.controller;
+package com.example.beatbox.controller.controller;
 
+import android.content.Context;
+import android.content.res.Configuration;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -59,7 +61,11 @@ public class BeatBoxFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_beat_box, container, false);
         mRecyclerView = view.findViewById(R.id.beat_box_recyclerview);
+        if (isTablet())
+            mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(),5));
+        else
         mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(),3));
+
         mAdapter = new SoundAdapter(mBeatBox.getSounds());
         mRecyclerView.setAdapter(mAdapter);
 
@@ -113,5 +119,10 @@ public class BeatBoxFragment extends Fragment {
         public int getItemCount() {
             return mSounds.size();
         }
+    }
+    public boolean isTablet() {
+        boolean xlarge = ((getActivity().getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) == 4);
+        boolean large = ((getActivity().getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) == Configuration.SCREENLAYOUT_SIZE_LARGE);
+        return (xlarge || large);
     }
 }
