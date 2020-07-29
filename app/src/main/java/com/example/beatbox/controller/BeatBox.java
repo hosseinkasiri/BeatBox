@@ -3,10 +3,11 @@ package com.example.beatbox.controller;
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
+import android.media.AudioAttributes;
 import android.media.AudioManager;
 import android.media.SoundPool;
+import android.os.Build;
 import android.util.Log;
-
 import com.example.beatbox.controller.model.Sound;
 
 import java.io.File;
@@ -28,7 +29,17 @@ public class BeatBox {
 
     public BeatBox(Context context) {
         mAssetManager = context.getAssets();
-        mSoundPool = new SoundPool(MAX_STREAM, AudioManager.STREAM_MUSIC ,0);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            AudioAttributes audioAttributes = new AudioAttributes.Builder().
+                    setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                    .setUsage(AudioAttributes.USAGE_GAME).build();
+            mSoundPool = new SoundPool.Builder().setMaxStreams(MAX_STREAM).
+                    setAudioAttributes(audioAttributes).
+                    build();
+        }else {
+             mSoundPool = new SoundPool(MAX_STREAM, AudioManager.STREAM_MUSIC ,0);
+        }
+
         loadSound();
     }
 
