@@ -2,6 +2,7 @@ package com.example.beatbox.controller.controller;
 
 import android.content.Context;
 import android.content.res.Configuration;
+import android.media.AudioManager;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -13,6 +14,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.SeekBar;
+import android.widget.TextView;
 
 import com.example.beatbox.R;
 import com.example.beatbox.controller.model.Sound;
@@ -29,6 +32,9 @@ public class BeatBoxFragment extends Fragment {
     private RecyclerView mRecyclerView;
     private SoundAdapter mAdapter;
     private BeatBox mBeatBox;
+    private SeekBar mSeekBar;
+    private TextView mProgressText;
+    private AudioManager mAudioManager;
 
     public BeatBoxFragment() {
         // Required empty public constructor
@@ -60,16 +66,44 @@ public class BeatBoxFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_beat_box, container, false);
-        mRecyclerView = view.findViewById(R.id.beat_box_recyclerview);
+        findViews(view);
         if (isTablet())
             mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(),5));
         else
         mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(),3));
+        mAudioManager = (AudioManager) getActivity().getSystemService(Context.AUDIO_SERVICE);
+        handelSeekBar();
 
         mAdapter = new SoundAdapter(mBeatBox.getSounds());
         mRecyclerView.setAdapter(mAdapter);
-
         return view;
+    }
+
+    private void handelSeekBar() {
+        mSeekBar.setMax(mAudioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC));
+        mSeekBar.setProgress(mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC));
+        mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                mProgressText.setText("Progress : " + progress);
+                mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC,
+                        progress, 0);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+            }
+        });
+    }
+
+    private void findViews(View view) {
+        mRecyclerView = view.findViewById(R.id.beat_box_recyclerview);
+        mSeekBar = view.findViewById(R.id.seek_bar);
+        mProgressText = view.findViewById(R.id.progress_text_view);
     }
 
     private class SoundHolder extends RecyclerView.ViewHolder{
@@ -121,8 +155,10 @@ public class BeatBoxFragment extends Fragment {
         }
     }
     public boolean isTablet() {
-        boolean xlarge = ((getActivity().getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) == 4);
-        boolean large = ((getActivity().getResources().getConfiguration().screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) == Configuration.SCREENLAYOUT_SIZE_LARGE);
+        boolean xlarge = ((getActivity().getResources().getConfiguration().screenLayout &
+                Configuration.SCREENLAYOUT_SIZE_MASK) == 4);
+        boolean large = ((getActivity().getResources().getConfiguration().screenLayout &
+                Configuration.SCREENLAYOUT_SIZE_MASK) == Configuration.SCREENLAYOUT_SIZE_LARGE);
         return (xlarge || large);
     }
 }
