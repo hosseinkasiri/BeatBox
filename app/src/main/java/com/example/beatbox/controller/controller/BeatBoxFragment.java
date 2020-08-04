@@ -33,7 +33,7 @@ public class BeatBoxFragment extends Fragment {
     private SoundAdapter mAdapter;
     private BeatBox mBeatBox;
     private SeekBar mSeekBar;
-    private TextView mProgressText;
+    private TextView mProgress;
     private AudioManager mAudioManager;
 
     public BeatBoxFragment() {
@@ -85,17 +85,19 @@ public class BeatBoxFragment extends Fragment {
         mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                mProgressText.setText("Progress : " + progress);
+                mProgress.setText("Playback speed :" + progress);
                 mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC,
                         progress, 0);
             }
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
+
             }
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
+
             }
         });
     }
@@ -103,7 +105,7 @@ public class BeatBoxFragment extends Fragment {
     private void findViews(View view) {
         mRecyclerView = view.findViewById(R.id.beat_box_recyclerview);
         mSeekBar = view.findViewById(R.id.seek_bar);
-        mProgressText = view.findViewById(R.id.progress_text_view);
+        mProgress = view.findViewById(R.id.progress_text_view);
     }
 
     private class SoundHolder extends RecyclerView.ViewHolder{
